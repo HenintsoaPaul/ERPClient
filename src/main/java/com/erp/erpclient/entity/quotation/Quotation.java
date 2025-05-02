@@ -3,7 +3,7 @@ package com.erp.erpclient.entity.quotation;
 import com.erp.erpclient.entity.Transaction;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+//import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -13,11 +13,11 @@ import java.util.List;
 public class Quotation extends Transaction {
 
     // Fields specific to Quotation
-    @NotBlank
+//    @NotBlank
     @Column(name = "quotation_to", nullable = false)
     private String quotationTo = "Customer";
 
-    @NotBlank
+//    @NotBlank
     @Column(name = "party_name", nullable = false)
     private String partyName;
 
@@ -28,7 +28,7 @@ public class Quotation extends Transaction {
     @Column(name = "valid_till")
     private Date validTill;
 
-    @NotBlank
+//    @NotBlank
     @Column(name = "order_type", nullable = false)
     private String orderType = "Sales";
 
@@ -78,7 +78,7 @@ public class Quotation extends Transaction {
     private String utmContent;
 
     // Status fields
-    @NotBlank
+//    @NotBlank
     @Column(name = "status", nullable = false)
     private String status = "Draft";
 
@@ -156,25 +156,27 @@ public class Quotation extends Transaction {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "quotation_id")
-    private List<PricingRuleDetail> pricingRules;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "quotation_id")
-    private List<SalesTaxesAndCharges> taxes;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "quotation_id")
-    private List<PaymentSchedule> paymentSchedule;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "quotation_id")
     private List<QuotationLostReasonDetail> lostReasons;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "quotation_id")
-    private List<PackedItem> packedItems;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "quotation_id")
-    private List<CompetitorDetail> competitors;
+    // todo: uncomment
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "quotation_id")
+//    private List<PackedItem> packedItems;
+//
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "quotation_id")
+//    private List<CompetitorDetail> competitors;
+//
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "quotation_id")
+//    private List<PricingRuleDetail> pricingRules;
+//
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "quotation_id")
+//    private List<SalesTaxesAndCharges> taxes;
+//
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "quotation_id")
+//    private List<PaymentSchedule> paymentSchedule;
+    // todo: uncomment
 }

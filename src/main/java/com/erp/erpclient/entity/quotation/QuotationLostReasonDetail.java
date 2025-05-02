@@ -2,8 +2,8 @@ package com.erp.erpclient.entity.quotation;
 
 import jakarta.persistence.*;
 
-@Entity
-@Table(name = "quotation_lost_reason_detail")
+//@Entity
+//@Table(name = "quotation_lost_reason_detail")
 public class QuotationLostReasonDetail {
 
     @Id
@@ -16,8 +16,8 @@ public class QuotationLostReasonDetail {
     @Column(name = "remarks")
     private String remarks;
 
-    @ManyToOne
-    @JoinColumn(name = "quotation_id")
+//    @ManyToOne
+//    @JoinColumn(name = "quotation_id")
     private Quotation quotation;
 
     // Getters and Setters

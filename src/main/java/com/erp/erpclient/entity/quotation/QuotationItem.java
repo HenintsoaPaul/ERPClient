@@ -3,8 +3,8 @@ package com.erp.erpclient.entity.quotation;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "quotation_item")
+//@Entity
+//@Table(name = "quotation_item")
 public class QuotationItem {
 
     @Id
@@ -34,8 +34,8 @@ public class QuotationItem {
 
     // Add all other fields from ERPNext Quotation Item
 
-    @ManyToOne
-    @JoinColumn(name = "quotation_id")
+//    @ManyToOne
+//    @JoinColumn(name = "quotation_id")
     private Quotation quotation;
 
     // Getters and Setters

@@ -5,7 +5,6 @@ import com.erp.erpclient.entity.Transaction;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 //@Entity
 //@Table(name = "purchase_order")
@@ -110,7 +109,7 @@ public class PurchaseOrder extends Transaction {
 
 
     // Status fields with specific options for PurchaseOrder
-    @NotBlank
+//    @NotBlank
     @Column(name = "status", nullable = false)
     private String status = "Draft"; // Options: Draft, On Hold, To Receive and Bill,
     // To Bill, To Receive, Completed, Cancelled, Closed, Delivered
