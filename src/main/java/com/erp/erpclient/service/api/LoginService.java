@@ -1,30 +1,31 @@
 package com.erp.erpclient.service.api;
 
+import com.erp.erpclient.SessionManager;
 import com.erp.erpclient.dto.LoginRequest;
 import com.erp.erpclient.dto.LoginResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
+import java.util.List;
+
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class LoginService {
 
     private final RestClient restClient;
-
-    public LoginService() {
-        this.restClient = RestClient.builder()
-                .baseUrl("http://library.localhost:8000")
-                .defaultHeader("Accept", MediaType.APPLICATION_JSON_VALUE)
-                .build();
-    }
+    private final SessionManager sessionManager;
 
     public LoginResponse login(LoginRequest request) {
         try {
-            return this.restClient.post()
+            ResponseEntity<LoginResponse> responseEntity = this.restClient.post()
                     .uri("/api/method/login")
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(request)
@@ -35,7 +36,22 @@ public class LoginService {
                     .onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
                         throw new RuntimeException("Server error: " + res.getStatusText());
                     })
-                    .body(LoginResponse.class);
+                    .toEntity(LoginResponse.class);
+
+            // Get all cookies from the response
+            HttpHeaders headers = responseEntity.getHeaders();
+            List<String> cookieHeaders = headers.get(HttpHeaders.SET_COOKIE);
+
+            // If you need a specific cookie
+            assert cookieHeaders != null;
+            String sessionCookie = cookieHeaders.stream()
+                    .filter(c -> c.startsWith("sid=")) // replace with your cookie name
+                    .findFirst()
+                    .orElse(null);
+
+            sessionManager.setAuthCookie(sessionCookie);
+
+            return responseEntity.getBody();
         } catch (RestClientException e) {
             throw new RuntimeException("Login failed: " + e.getMessage());
         }
