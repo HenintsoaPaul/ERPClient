@@ -1,6 +1,6 @@
 package com.erp.erpclient.entity.porder;
 
-import jakarta.persistence.*;
+// import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -8,38 +8,37 @@ import java.util.Date;
 //@Table(name = "purchase_order_item")
 public class PurchaseOrderItem {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
-    @Column(name = "item_code")
+//    //@Column(name = "item_code")
     private String itemCode;
 
-    @Column(name = "item_name")
+//    //@Column(name = "item_name")
     private String itemName;
 
-    @Column(name = "description")
+//    //@Column(name = "description")
     private String description;
 
-    @Column(name = "qty", precision = 21, scale = 9)
+//    //@Column(name = "qty", precision = 21, scale = 9)
     private BigDecimal qty;
 
-    @Column(name = "rate", precision = 21, scale = 9)
+//    //@Column(name = "rate", precision = 21, scale = 9)
     private BigDecimal rate;
 
-    @Column(name = "amount", precision = 21, scale = 9)
+//    //@Column(name = "amount", precision = 21, scale = 9)
     private BigDecimal amount;
 
-    @Column(name = "warehouse")
+//    //@Column(name = "warehouse")
     private String warehouse;
 
-    @Column(name = "schedule_date")
+//    //@Column(name = "schedule_date")
     private Date scheduleDate;
 
     // Add all other fields from ERPNext Purchase Order Item
 
-    @ManyToOne
-    @JoinColumn(name = "purchase_order_id")
+//    @ManyToOne
+//    @JoinColumn(name = "purchase_order_id")
     private PurchaseOrder purchaseOrder;
 
     // Getters and Setters

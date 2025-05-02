@@ -1,19 +1,18 @@
 package com.erp.erpclient.entity.quotation;
 
-import jakarta.persistence.*;
+// import jakarta.persistence.*;
 
 //@Entity
 //@Table(name = "quotation_lost_reason_detail")
 public class QuotationLostReasonDetail {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
-    @Column(name = "lost_reason")
+    //@Column(name = "lost_reason")
     private String lostReason;
 
-    @Column(name = "remarks")
+    //@Column(name = "remarks")
     private String remarks;
 
 //    @ManyToOne
