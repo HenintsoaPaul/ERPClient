@@ -8,8 +8,11 @@ import org.springframework.stereotype.Component;
 public class SessionManager {
     private static final String AUTH_COOKIE_KEY = "AUTH_COOKIE";
 
-    @Autowired
-    private HttpSession httpSession;
+    private final HttpSession httpSession;
+
+    public SessionManager(HttpSession httpSession) {
+        this.httpSession = httpSession;
+    }
 
     /**
      * Stores the authentication cookie in the session
