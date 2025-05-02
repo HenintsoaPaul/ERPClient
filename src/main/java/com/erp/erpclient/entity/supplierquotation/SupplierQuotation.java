@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 public class SupplierQuotation extends Transaction {
     // Supplier Quotation specific fields
+    private Date transactionDate;
     private Date validTill;
     private String quotationNumber;
     private String buyingPriceList;
@@ -32,9 +33,9 @@ public class SupplierQuotation extends Transaction {
     private BigDecimal grandTotal;
 
     // Status
-    private Status status = Status.DRAFT;
+    private Status status = Status.Draft;
 
     public enum Status {
-        DRAFT, SUBMITTED, STOPPED, CANCELLED, EXPIRED
+        Draft, Submitted, Stopped, Cancelled, Expired
     }
 }
