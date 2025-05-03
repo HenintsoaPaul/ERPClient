@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ERPClient - Quotations List</title>
+</head>
+<body>
+<h1>Quotations List</h1>
+
+<!--general-->
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Supplier</th>
+            <th>Status</th>
+            <th>Transaction Date</th>
+            <th>Valid Till</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${sq.name}"></td>
+            <td th:text="${sq.supplierName}"></td>
+            <td th:text="${sq.status}"></td>
+            <td th:text="${sq.transactionDate}"></td>
+            <td th:text="${sq.validTill}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!--items-->
+<div>
+    <h2>Items related</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Item Code</th>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Uom</th>
+            <th>Rate</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${items}">
+            <td th:text="${item.itemCode}"></td>
+            <td th:text="${item.itemName}"></td>
+            <td th:text="${item.qty}"></td>
+            <td th:text="${item.uom}"></td>
+            <td th:text="${item.rate}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
