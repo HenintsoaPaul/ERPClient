@@ -1,6 +1,8 @@
 package com.erp.erpclient.controller;
 
 import com.erp.erpclient.entity.supplierquotation.SupplierQuotation;
+import com.erp.erpclient.entity.supplierquotation.SupplierQuotationItem;
+import com.erp.erpclient.service.api.SupplierQuotationItemService;
 import com.erp.erpclient.service.api.SupplierQuotationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -17,17 +19,35 @@ import java.util.List;
 public class SupplierQuotationController {
 
     private final SupplierQuotationService supplierQuotationService;
+    private final SupplierQuotationItemService supplierQuotationItemService;
 
     @GetMapping
     public String findAllBySupplierName(
-            @RequestParam(name = "name") String supplierName,
+            @RequestParam(name = "supplier_name") String supplierName,
             Model model
     ) {
         List<SupplierQuotation> suppliers = supplierQuotationService.findAllBySupplier(supplierName).message();
 
         model.addAttribute("supplierQuotations", suppliers);
 
-        return "suppliers/quotations";
+        return "supplier-quotation/index";
+    }
+
+    @GetMapping("/fiche")
+    public String findFiche(
+            @RequestParam(name = "name") String name,
+            @RequestParam(name = "sp_name") String supplierName,
+            Model model
+    ) {
+        SupplierQuotation sq = supplierQuotationService.findAllBySupplier(supplierName).message().get(0);
+
+        model.addAttribute("sq", sq);
+
+        List<SupplierQuotationItem> items = supplierQuotationItemService.findAllBySupplier(name).message();
+
+        model.addAttribute("items", items);
+
+        return "supplier-quotation/fiche";
     }
 
 }
