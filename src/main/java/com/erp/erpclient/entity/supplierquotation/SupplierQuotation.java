@@ -2,11 +2,13 @@ package com.erp.erpclient.entity.supplierquotation;
 
 import com.erp.erpclient.entity.Transaction;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SupplierQuotation extends Transaction {
     // Supplier Quotation specific fields
