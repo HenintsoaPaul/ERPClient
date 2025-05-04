@@ -24,7 +24,7 @@ public class SupplierService {
             String sessionCookie = sessionManager.getAuthCookie();
 
             RestClient.ResponseSpec responseSpec = this.restClient.get()
-                    .uri("/api/method/library_management.api.get_suppliers")
+                    .uri("/api/method/erpnext.api.get_suppliers")
                     .header(HttpHeaders.COOKIE, sessionCookie)
                     .accept(MediaType.APPLICATION_JSON)
                     .retrieve();
