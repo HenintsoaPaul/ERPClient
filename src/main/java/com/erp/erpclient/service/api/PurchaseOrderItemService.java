@@ -1,7 +1,7 @@
 package com.erp.erpclient.service.api;
 
 import com.erp.erpclient.SessionManager;
-import com.erp.erpclient.dto.SupplierResponse;
+import com.erp.erpclient.dto.PurchaseOrderItemResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -14,17 +14,21 @@ import org.springframework.web.client.RestClientException;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class SupplierService {
+public class PurchaseOrderItemService {
 
     private final RestClient restClient;
     private final SessionManager sessionManager;
 
-    public SupplierResponse findAll() {
+    public PurchaseOrderItemResponse findAllBySupplier(String name) {
         try {
             String sessionCookie = sessionManager.getAuthCookie();
 
             RestClient.ResponseSpec responseSpec = this.restClient.get()
-                    .uri("/api/method/erpnext.api.get_suppliers")
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/api/method/erpnext.api.get_full_purchase_order")
+                            .queryParam("name", name)
+                            .build()
+                    )
                     .header(HttpHeaders.COOKIE, sessionCookie)
                     .accept(MediaType.APPLICATION_JSON)
                     .retrieve();
@@ -38,7 +42,7 @@ public class SupplierService {
                         String body = res.getBody().toString();
                         throw new RuntimeException("API server error: " + res.getStatusCode() + " - " + body);
                     })
-                    .body(SupplierResponse.class);
+                    .body(PurchaseOrderItemResponse.class);
         } catch (RestClientException e) {
             e.printStackTrace();
             throw new RuntimeException("Error : " + e.getMessage());

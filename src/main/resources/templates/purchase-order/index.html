@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ERPClient - Purchase Orders List</title>
+</head>
+<body>
+<h1>Purchase Orders List of a <!***!></h1>
+
+<!--general-->
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Supplier</th>
+            <th>Status</th>
+            <th>Transaction Date</th>
+            <th>Required By</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="po : ${purchaseOrders}">
+            <td th:text="${po.name}"></td>
+            <td th:text="${po.supplierName}"></td>
+            <td th:text="${po.status}"></td>
+            <td th:text="${po.transactionDate}"></td>
+            <td th:text="${po.scheduleDate}"></td>
+            <td>
+                <a th:href="'/purchase-orders/fiche?name=' + ${po.name} + '&sp_name=' + ${po.supplierName}">
+                    Detail
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

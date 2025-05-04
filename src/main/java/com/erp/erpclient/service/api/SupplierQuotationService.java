@@ -24,9 +24,8 @@ public class SupplierQuotationService {
             String sessionCookie = sessionManager.getAuthCookie();
 
             RestClient.ResponseSpec responseSpec = this.restClient.get()
-//                    .uri("api/method/library_management.api.get_supplier_quotations")
                     .uri(uriBuilder -> uriBuilder
-                            .path("/api/method/library_management.api.get_supplier_quotations")  // Existing path
+                            .path("/api/method/erpnext.api.get_supplier_quotations")  // Existing path
                             .queryParam("supplier_name", supplierName)    // Add query param
                             .build()
                     )
