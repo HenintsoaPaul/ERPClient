@@ -1,20 +1,21 @@
 package com.erp.erpclient.entity.porder;
 
 import com.erp.erpclient.entity.Transaction;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class PurchaseOrder extends Transaction {
-
     private Date scheduleDate;
+    private Date transactionDate;
     private String orderConfirmationNo;
     private Date orderConfirmationDate;
-    private Boolean getItemsFromOpenMaterialRequests = false;
-    private Boolean isOldSubcontractingFlow = false;
     private String refSq;
     private String interCompanyOrderReference;
-    private Boolean dropShip = false;
     private String customer;
     private String customerName;
     private String customerContactPerson;
@@ -27,11 +28,9 @@ public class PurchaseOrder extends Transaction {
     private String selectPrintHeading;
     private Date fromDate;
     private Date toDate;
-    private Boolean updateAutoRepeatReference = false;
     private BigDecimal taxWithholdingNetTotal;
     private BigDecimal baseTaxWithholdingNetTotal;
 
-    // Status fields with specific options for PurchaseOrder
     private String status = "Draft";
     // Options: Draft, On Hold, To Receive and Bill,// To Bill, To Receive, Completed, Cancelled, Closed, Delivered
 
