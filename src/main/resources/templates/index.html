@@ -2,9 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ERPClient</title>
+    <title>ERPClient-Login</title>
 </head>
 <body>
-<h1>ERPClient</h1>
+<div id="login-container">
+    <form action="/login" method="post">
+        <div>
+            <label for="usr">Username:</label>
+            <input id="usr" type="text" name="inp-usr" required>
+        </div>
+        <div>
+            <label for="pwd">Password:</label>
+            <input id="pwd" type="password" name="inp-pwd" required>
+        </div>
+        <div>
+            <button type="submit">Login</button>
+        </div>
+    </form>
+</div>
 </body>
 </html>

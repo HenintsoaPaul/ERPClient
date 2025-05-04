@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ERPClient - Suppliers List</title>
+</head>
+<body>
+<h1>Suppliers List</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Country</th>
+        <th>Group</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="supplier : ${suppliers}">
+        <td th:text="${supplier.name}">#</td>
+        <td th:text="${supplier.supplierName}">Supplier Name</td>
+        <td th:text="${supplier.supplierType}">Supplier Type</td>
+        <td th:text="${supplier.country}">Country</td>
+        <td th:text="${supplier.supplierGroup}">Supplier Group</td>
+        <td>
+            <a th:href="'/supplier-quotations?supplier_name=' + ${supplier.name}">
+                See quotations
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
