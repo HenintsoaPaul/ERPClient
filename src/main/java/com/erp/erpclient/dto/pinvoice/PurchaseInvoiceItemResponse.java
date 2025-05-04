@@ -1,4 +1,4 @@
-package com.erp.erpclient.dto;
+package com.erp.erpclient.dto.pinvoice;
 
 import com.erp.erpclient.entity.pinvoice.PurchaseInvoiceItem;
 

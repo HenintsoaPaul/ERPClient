@@ -1,4 +1,4 @@
-package com.erp.erpclient.dto;
+package com.erp.erpclient.dto.porder;
 
 
 import com.erp.erpclient.entity.porder.PurchaseOrderItem;
