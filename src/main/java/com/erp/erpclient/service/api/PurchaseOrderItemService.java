@@ -1,7 +1,7 @@
 package com.erp.erpclient.service.api;
 
 import com.erp.erpclient.SessionManager;
-import com.erp.erpclient.dto.PurchaseOrderItemResponse;
+import com.erp.erpclient.dto.porder.PurchaseOrderItemResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

@@ -1,7 +1,7 @@
 package com.erp.erpclient.service.api;
 
 import com.erp.erpclient.SessionManager;
-import com.erp.erpclient.dto.PurchaseInvoiceResponse;
+import com.erp.erpclient.dto.pinvoice.PurchaseInvoiceResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
