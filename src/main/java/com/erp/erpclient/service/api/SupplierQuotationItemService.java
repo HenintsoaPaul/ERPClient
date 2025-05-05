@@ -26,6 +26,7 @@ public class SupplierQuotationItemService {
             String uri = UriComponentsBuilder
                     .fromPath(GET_QUOTATION_METHOD_PATH)
                     .queryParam("name", supplierName)
+                    .build()
                     .toUriString();
 
             return apiClient.executeGet(

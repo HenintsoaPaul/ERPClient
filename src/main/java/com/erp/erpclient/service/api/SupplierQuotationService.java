@@ -20,6 +20,7 @@ public class SupplierQuotationService {
             String uri = UriComponentsBuilder
                     .fromPath("/api/method/erpnext.api.get_supplier_quotations")
                     .queryParam("supplier_name", supplierName)
+                    .build()
                     .toUriString();
 
             return apiClient.executeGet(uri, SupplierQuotationResponse.class);

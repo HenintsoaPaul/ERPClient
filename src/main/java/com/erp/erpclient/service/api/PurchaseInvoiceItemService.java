@@ -20,6 +20,7 @@ public class PurchaseInvoiceItemService {
             String uri = UriComponentsBuilder
                     .fromPath("/api/method/erpnext.api.get_full_purchase_invoice")
                     .queryParam("name", name)
+                    .build()
                     .toUriString();
 
             return apiClient.executeGet(

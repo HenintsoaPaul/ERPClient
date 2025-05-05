@@ -20,6 +20,7 @@ public class PurchaseOrderItemService {
             String uri = UriComponentsBuilder
                     .fromPath("/api/method/erpnext.api.get_full_purchase_order")
                     .queryParam("name", supplierName)
+                    .build()
                     .toUriString();
 
             return apiClient.executeGet(uri, PurchaseOrderItemResponse.class);
