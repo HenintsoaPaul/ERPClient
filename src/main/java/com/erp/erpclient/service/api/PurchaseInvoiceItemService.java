@@ -28,7 +28,7 @@ public class PurchaseInvoiceItemService {
             );
         } catch (RestClientException e) {
             log.error("Failed to fetch purchase invoice items for {}", name, e);
-            throw new ApiClientException("purchase.invoice.fetch.error", e);
+            throw new ApiClientException("purchase.invoice.item.fetch.error", e);
         }
     }
 }
