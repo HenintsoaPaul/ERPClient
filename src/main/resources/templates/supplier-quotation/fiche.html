@@ -115,7 +115,12 @@
 </div>
 
 <!-- Edit Rate Modal -->
-<div class="modal fade" id="editRateModal" tabindex="-1">
+<div class="modal fade"
+     id="editRateModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="editRateTitle"
+     aria-modal="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -136,6 +141,7 @@
                         <label for="newQty" class="form-label">New Qty</label>
                         <input type="number" step="1" class="form-control" id="newQty" required>
                     </div>
+                    <input type="hidden" id="itemId">
                     <input type="hidden" id="rowIndex">
                 </form>
             </div>
@@ -157,13 +163,13 @@
 
         // Handle edit button click
         $('.edit-rate-btn').click(function () {
+            let itemId = $(this).data('item-id');
             let itemCode = $(this).data('item-code');
             let currentRate = $(this).data('current-rate');
             let currentQty = $(this).data('current-qty');
             let rowIndex = $(this).data('row-index');
 
-            console.log(itemCode)
-
+            $('#itemId').val(itemId);
             $('#itemCode').val(itemCode);
             $('#newRate').val(currentRate);
             $('#newQty').val(currentQty);
@@ -189,11 +195,11 @@
                         newRate: newRate,
                         newQty: newQty
                     }),
-                    success: function(response) {
+                    success: function (response) {
                         // Handle success
                         editRateModal.hide();
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         // Handle error
                         alert('Error updating rate');
                     }
@@ -201,8 +207,7 @@
 
                 // Update the table display
                 $($('.item-rate')[rowIndex]).text(newRate);
-                $()
-
+                $($('.item-qty')[rowIndex]).text(newQty);
 
                 // For now, just close the modal
                 editRateModal.hide();
