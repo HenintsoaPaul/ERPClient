@@ -2,87 +2,94 @@ package com.erp.erpclient.service.api;
 
 import com.erp.erpclient.SessionManager;
 import com.erp.erpclient.dto.SupplierQuotationItemResponse;
-import com.erp.erpclient.entity.supplierquotation.SupplierQuotationItem;
+import com.erp.erpclient.entity.supplierquotation.UpdateResponse;
+import com.erp.erpclient.exception.ApiClientException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.util.UriComponentsBuilder;
 
-@Service
+import java.util.Map;
+
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class SupplierQuotationItemService {
+
+    private static final String SUPPLIER_QUOTATION_ITEM_PATH = "/api/resource/Supplier Quotation Item/";
+    private static final String GET_QUOTATION_METHOD_PATH = "/api/method/erpnext.api.get_full_supplier_quotation";
 
     private final RestClient restClient;
     private final SessionManager sessionManager;
 
-    public SupplierQuotationItemResponse findAllBySupplier(String name) {
+    public SupplierQuotationItemResponse findAllBySupplier(String supplierName) {
         try {
-            String sessionCookie = sessionManager.getAuthCookie();
-
-            RestClient.ResponseSpec responseSpec = this.restClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/api/method/erpnext.api.get_full_supplier_quotation")
-                            .queryParam("name", name)
-                            .build()
-                    )
-                    .header(HttpHeaders.COOKIE, sessionCookie)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .retrieve();
-
-            return responseSpec
-                    .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
-                        String body = res.getBody().toString();
-                        throw new RuntimeException("API client error: " + res.getStatusCode() + " - " + body);
-                    })
-                    .onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
-                        String body = res.getBody().toString();
-                        throw new RuntimeException("API server error: " + res.getStatusCode() + " - " + body);
-                    })
-                    .body(SupplierQuotationItemResponse.class);
+            return executeAuthenticatedGet(
+                    UriComponentsBuilder.fromPath(GET_QUOTATION_METHOD_PATH)
+                            .queryParam("name", supplierName)
+                            .toUriString(),
+                    SupplierQuotationItemResponse.class
+            );
         } catch (RestClientException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error : " + e.getMessage());
+            log.error("Failed to fetch supplier quotations for {}", supplierName, e);
+            throw new ApiClientException("supplier.quotation.fetch.error", e);
         }
     }
 
-    private record UpdateRateResponse(SupplierQuotationItem data) {
-    }
-
-    private record UpdateRateRequest(double rate, double qty) {
-    }
-
-    public SupplierQuotationItem updateRate(String itemId, Double newRate, Double newQty) {
+    public UpdateResponse updateRate(String itemId, Double newRate, Double newQty) {
         try {
-            String sessionCookie = sessionManager.getAuthCookie(),
-                    uri = "/api/resource/Supplier Quotation Item/" + itemId;
+            Map<String, Object> requestBody = Map.of(
+                    "rate", newRate,
+                    "qty", newQty
+            );
 
-            RestClient.ResponseSpec responseSpec = this.restClient.put()
-                    .uri(uri)
-                    .header(HttpHeaders.COOKIE, sessionCookie)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .body(new UpdateRateRequest(newRate, newQty))
-                    .retrieve();
-
-            UpdateRateResponse response = responseSpec
-                    .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
-                        String body = res.getBody().toString();
-                        throw new RuntimeException("API client error: " + res.getStatusCode() + " - " + body);
-                    })
-                    .onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
-                        String body = res.getBody().toString();
-                        throw new RuntimeException("API server error: " + res.getStatusCode() + " - " + body);
-                    })
-                    .body(UpdateRateResponse.class);
-
-            return response.data();
+            return executeAuthenticatedPut(
+                    SUPPLIER_QUOTATION_ITEM_PATH + itemId,
+                    requestBody,
+                    UpdateResponse.class
+            );
         } catch (RestClientException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error : " + e.getMessage());
+            log.error("Failed to update rate for item {}", itemId, e);
+            throw new ApiClientException("supplier.quotation.rate.update.error", e);
         }
+    }
+
+    private <T> T executeAuthenticatedGet(String uri, Class<T> responseType) {
+        return restClient.get()
+                .uri(uri)
+                .headers(this::addAuthHeaders)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+                    throw new RuntimeException("API client error: " + res.getStatusCode() + " - " + res.getBody());
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
+                    throw new RuntimeException("API server error: " + res.getStatusCode() + " - " + res.getBody());
+                })
+                .body(responseType);
+    }
+
+    private <T> T executeAuthenticatedPut(String uri, Object body, Class<T> responseType) {
+        return restClient.put()
+                .uri(uri)
+                .headers(this::addAuthHeaders)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(body)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+                    throw new RuntimeException("API client error: " + res.getStatusCode() + " - " + res.getBody().toString());
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
+                    throw new RuntimeException("API server error: " + res.getStatusCode() + " - " + res.getBody().toString());
+                })
+                .body(responseType);
+    }
+
+    private void addAuthHeaders(HttpHeaders headers) {
+        headers.add(HttpHeaders.COOKIE, sessionManager.getAuthCookie());
+        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
     }
 }
