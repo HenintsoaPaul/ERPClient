@@ -4,7 +4,6 @@ import com.erp.erpclient.entity.pinvoice.PurchaseInvoice;
 import com.erp.erpclient.entity.pinvoice.PurchaseInvoiceItem;
 import com.erp.erpclient.service.api.PurchaseInvoiceItemService;
 import com.erp.erpclient.service.api.PurchaseInvoiceService;
-import jakarta.servlet.http.HttpSession;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -61,32 +60,17 @@ public class PurchaseInvoiceController {
 
     @PostMapping(value = "/add-payment", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addPayment(
-            @RequestBody FufuRequest request,
-            HttpSession httpSession
+            @RequestBody FufuRequest request
     ) {
-        String paymentEntryId;
-
-        boolean ok = true;
-
-//        paymentEntryId = purchaseInvoiceService.addPayment(
-//                request.getPurchaseInvoiceId(),
-//                request.getAmount(),
-//                request.getPostingDate()
-//        );
-
-        ok = purchaseInvoiceService.makePayment(
+        String ok = purchaseInvoiceService.addPayment(
                 request.getPurchaseInvoiceId(),
                 request.getAmount(),
                 request.getPostingDate(),
                 "Cash",
-                "",
-                "remark be lele",
-                httpSession
+                "remark be lele"
         );
 
-
-//        if (paymentEntryId != null) {
-        if (ok) {
+        if (ok.equals("ok")) {
             return ResponseEntity.ok()
                     .body("Paid successfully");
         } else {
