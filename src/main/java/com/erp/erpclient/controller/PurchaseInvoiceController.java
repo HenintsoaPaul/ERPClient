@@ -4,7 +4,7 @@ import com.erp.erpclient.entity.pinvoice.PurchaseInvoice;
 import com.erp.erpclient.entity.pinvoice.PurchaseInvoiceItem;
 import com.erp.erpclient.service.api.PurchaseInvoiceItemService;
 import com.erp.erpclient.service.api.PurchaseInvoiceService;
-import lombok.AllArgsConstructor;
+import jakarta.servlet.http.HttpSession;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -52,34 +52,47 @@ public class PurchaseInvoiceController {
         return "purchase-invoice/fiche";
     }
 
-//    @Data
-//    private static class FufuRequest {
-//        private String quotationId;
-//        private String itemCode;
-//        private Double newRate;
-//    }
-//
-//    @Data
-//    @AllArgsConstructor
-//    private static class FufuResponse {
-//        private boolean success;
-//        private String message;
-//        private Double updatedRate;
-//    }
-//
-//    @PostMapping(value = "/set-paid", consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<FufuResponse> setPaid(
-//            @RequestBody FufuRequest request
-//    ) {
-//        boolean isPaid = true;
-//
-//        if (isPaid) {
-//            return ResponseEntity.ok()
-//                    .body(new FufuResponse(true, "Status updated successfully", request.getNewRate()));
-//        } else {
-//            return ResponseEntity.internalServerError()
-//                    .body(new FufuResponse(false, "Failed to update rate in ERPNext", null));
-//        }
-//    }
+    @Data
+    private static class FufuRequest {
+        private String purchaseInvoiceId;
+        private String postingDate;
+        private double amount;
+    }
+
+    @PostMapping(value = "/add-payment", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addPayment(
+            @RequestBody FufuRequest request,
+            HttpSession httpSession
+    ) {
+        String paymentEntryId;
+
+        boolean ok = true;
+
+//        paymentEntryId = purchaseInvoiceService.addPayment(
+//                request.getPurchaseInvoiceId(),
+//                request.getAmount(),
+//                request.getPostingDate()
+//        );
+
+        ok = purchaseInvoiceService.makePayment(
+                request.getPurchaseInvoiceId(),
+                request.getAmount(),
+                request.getPostingDate(),
+                "Cash",
+                "",
+                "remark be lele",
+                httpSession
+        );
+
+
+//        if (paymentEntryId != null) {
+        if (ok) {
+            return ResponseEntity.ok()
+                    .body("Paid successfully");
+        } else {
+            return ResponseEntity.internalServerError()
+                    .body("Failed to add payment entry in ERPNext");
+        }
+    }
 
 }

@@ -4,7 +4,6 @@ import com.erp.erpclient.entity.Transaction;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +15,9 @@ public class PurchaseInvoice extends Transaction {
     private Date postingDate;
     private String postingTime;
     private String status;
+
+    private double grandTotal;
+    private double outstandingAmount;
 
     private Boolean isPaid = false;
     private Boolean isReturn = false;
@@ -35,4 +37,8 @@ public class PurchaseInvoice extends Transaction {
     private Boolean updateStock = false;
 
     private List<PurchaseInvoiceItem> items;
+
+    public double getAllocatedAmount() {
+        return grandTotal - outstandingAmount;
+    }
 }
