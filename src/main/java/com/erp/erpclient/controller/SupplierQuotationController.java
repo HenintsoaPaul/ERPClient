@@ -54,9 +54,9 @@ public class SupplierQuotationController {
 
     @Data
     private static class FufuRequest {
-        private String quotationId;
-        private String itemCode;
+        private String itemId;
         private Double newRate;
+        private Double newQty;
     }
 
     @Data
@@ -71,9 +71,13 @@ public class SupplierQuotationController {
     public ResponseEntity<FufuResponse> upItemRate(
             @RequestBody FufuRequest request
     ) {
-        boolean updateSuccess = true;
+        SupplierQuotationItem ff = supplierQuotationItemService.updateRate(
+                request.getItemId(),
+                request.getNewRate(),
+                request.getNewQty()
+        );
 
-        if (updateSuccess) {
+        if (ff != null) {
             return ResponseEntity.ok()
                     .body(new FufuResponse(true, "Rate updated successfully", request.getNewRate()));
         } else {
