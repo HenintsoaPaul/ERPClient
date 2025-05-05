@@ -1,14 +1,11 @@
 package com.erp.erpclient.service.api;
 
-import com.erp.erpclient.SessionManager;
 import com.erp.erpclient.dto.SupplierQuotationItemResponse;
 import com.erp.erpclient.entity.supplierquotation.UpdateResponse;
 import com.erp.erpclient.exception.ApiClientException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -22,15 +19,17 @@ public class SupplierQuotationItemService {
     private static final String SUPPLIER_QUOTATION_ITEM_PATH = "/api/resource/Supplier Quotation Item/";
     private static final String GET_QUOTATION_METHOD_PATH = "/api/method/erpnext.api.get_full_supplier_quotation";
 
-    private final RestClient restClient;
-    private final SessionManager sessionManager;
+    private final ApiClient apiClient;
 
     public SupplierQuotationItemResponse findAllBySupplier(String supplierName) {
         try {
-            return executeAuthenticatedGet(
-                    UriComponentsBuilder.fromPath(GET_QUOTATION_METHOD_PATH)
-                            .queryParam("name", supplierName)
-                            .toUriString(),
+            String uri = UriComponentsBuilder
+                    .fromPath(GET_QUOTATION_METHOD_PATH)
+                    .queryParam("name", supplierName)
+                    .toUriString();
+
+            return apiClient.executeGet(
+                    uri,
                     SupplierQuotationItemResponse.class
             );
         } catch (RestClientException e) {
@@ -46,7 +45,7 @@ public class SupplierQuotationItemService {
                     "qty", newQty
             );
 
-            return executeAuthenticatedPut(
+            return apiClient.executePut(
                     SUPPLIER_QUOTATION_ITEM_PATH + itemId,
                     requestBody,
                     UpdateResponse.class
@@ -55,41 +54,5 @@ public class SupplierQuotationItemService {
             log.error("Failed to update rate for item {}", itemId, e);
             throw new ApiClientException("supplier.quotation.rate.update.error", e);
         }
-    }
-
-    private <T> T executeAuthenticatedGet(String uri, Class<T> responseType) {
-        return restClient.get()
-                .uri(uri)
-                .headers(this::addAuthHeaders)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
-                    throw new RuntimeException("API client error: " + res.getStatusCode() + " - " + res.getBody());
-                })
-                .onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
-                    throw new RuntimeException("API server error: " + res.getStatusCode() + " - " + res.getBody());
-                })
-                .body(responseType);
-    }
-
-    private <T> T executeAuthenticatedPut(String uri, Object body, Class<T> responseType) {
-        return restClient.put()
-                .uri(uri)
-                .headers(this::addAuthHeaders)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(body)
-                .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
-                    throw new RuntimeException("API client error: " + res.getStatusCode() + " - " + res.getBody().toString());
-                })
-                .onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
-                    throw new RuntimeException("API server error: " + res.getStatusCode() + " - " + res.getBody().toString());
-                })
-                .body(responseType);
-    }
-
-    private void addAuthHeaders(HttpHeaders headers) {
-        headers.add(HttpHeaders.COOKIE, sessionManager.getAuthCookie());
-        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
     }
 }
