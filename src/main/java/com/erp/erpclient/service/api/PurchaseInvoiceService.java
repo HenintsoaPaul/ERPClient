@@ -2,6 +2,7 @@ package com.erp.erpclient.service.api;
 
 import com.erp.erpclient.SessionManager;
 import com.erp.erpclient.dto.pinvoice.PurchaseInvoiceResponse;
+import com.erp.erpclient.exception.ApiClientException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,70 +22,37 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PurchaseInvoiceService {
 
-    private final RestClient restClient;
     private final SessionManager sessionManager;
     private final RestTemplate restTemplate = new RestTemplate();
+    private final ApiClient apiClient;
 
-    public PurchaseInvoiceResponse findAllBySupplier(String supplier) {
+    public PurchaseInvoiceResponse findAllBySupplier(String supplierName) {
         try {
-            String sessionCookie = sessionManager.getAuthCookie();
+            String uri = UriComponentsBuilder
+                    .fromPath("/api/method/erpnext.api.get_purchase_invoices")
+                    .queryParam("supplier_name", supplierName)
+                    .toUriString();
 
-            RestClient.ResponseSpec responseSpec = this.restClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/api/method/erpnext.api.get_purchase_invoices")
-                            .queryParam("supplier_name", supplier)
-                            .build()
-                    )
-                    .header(HttpHeaders.COOKIE, sessionCookie)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .retrieve();
-
-            return responseSpec
-                    .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
-                        String body = res.getBody().toString();
-                        throw new RuntimeException("API client error: " + res.getStatusCode() + " - " + body);
-                    })
-                    .onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
-                        String body = res.getBody().toString();
-                        throw new RuntimeException("API server error: " + res.getStatusCode() + " - " + body);
-                    })
-                    .body(PurchaseInvoiceResponse.class);
+            return apiClient.executeGet(uri, PurchaseInvoiceResponse.class);
         } catch (RestClientException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error : " + e.getMessage());
+            log.error("Failed to fetch purchase invoices for {}", supplierName, e);
+            throw new ApiClientException("purchase.invoice.fetch.error", e);
         }
     }
 
     public String addPayment(String purchaseInvoiceId, double amount, String postingDate) {
         try {
-            String sessionCookie = sessionManager.getAuthCookie();
+            String uri = UriComponentsBuilder
+                    .fromPath("/api/method/erpnext.api.create_payment_for_invoice")
+                    .queryParam("purchase_invoice_id", purchaseInvoiceId)
+                    .queryParam("amount", amount)
+                    .queryParam("posting_date", postingDate)
+                    .toUriString();
 
-            RestClient.ResponseSpec responseSpec = this.restClient.get()
-                    .uri(uriBuilder -> uriBuilder
-//                            .path("/api/method/erpnext.api.create_payment_for_invoice_2")
-                            .path("/api/method/erpnext.api.create_payment_for_invoice")
-                            .queryParam("purchase_invoice_id", purchaseInvoiceId)
-                            .queryParam("amount", amount)
-                            .queryParam("posting_date", postingDate)
-                            .build()
-                    )
-                    .header(HttpHeaders.COOKIE, sessionCookie)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .retrieve();
-
-            return responseSpec
-                    .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
-                        String body = res.getBody().toString();
-                        throw new RuntimeException("API client error: " + res.getStatusCode() + " - " + body);
-                    })
-                    .onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
-                        String body = res.getBody().toString();
-                        throw new RuntimeException("API server error: " + res.getStatusCode() + " - " + body);
-                    })
-                    .body(String.class);
+            return apiClient.executeGet(uri, String.class);
         } catch (RestClientException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error : " + e.getMessage());
+            log.error("Failed to add payment entry for {}", purchaseInvoiceId, e);
+            throw new ApiClientException("payment.entry.add.error", e);
         }
     }
 
