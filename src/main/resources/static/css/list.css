@@ -8,7 +8,6 @@ h1 {
 }
 table {
     background-color: white;
-    border-radius: 0.5rem;
     overflow: hidden;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }

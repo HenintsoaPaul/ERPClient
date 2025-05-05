@@ -3,38 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>ERPClient - Supplier Quotations List</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/list.css}">
 </head>
 <body>
-<h1>Supplier Quotations List of a <!***!></h1>
 
-<!--general-->
-<div>
-    <table>
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Supplier</th>
-            <th>Status</th>
-            <th>Transaction Date</th>
-            <th>Valid Till</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="sq : ${supplierQuotations}">
-            <td th:text="${sq.name}"></td>
-            <td th:text="${sq.supplierName}"></td>
-            <td th:text="${sq.status}"></td>
-            <td th:text="${sq.transactionDate}"></td>
-            <td th:text="${sq.validTill}"></td>
-            <td>
-                <a th:href="'/supplier-quotations/fiche?name=' + ${sq.name} + '&sp_name=' + ${sq.supplierName}">
-                    Detail
-                </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<header th:include="fragments/navbar"></header>
+
+<main class="container">
+    <h1 class="my-4">Supplier Quotations List</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Supplier</th>
+                <th>Status</th>
+                <th>Transaction Date</th>
+                <th>Valid Till</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="sq : ${supplierQuotations}">
+                <td th:text="${sq.name}"></td>
+                <td th:text="${sq.supplierName}"></td>
+                <td th:text="${sq.status}"></td>
+                <td th:text="${sq.transactionDate}"></td>
+                <td th:text="${sq.validTill}"></td>
+                <td>
+                    <a class="btn btn-sm btn-info" th:href="'/supplier-quotations/fiche?name=' + ${sq.name} + '&sp_name=' + ${sq.supplierName}">
+                        Details
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
