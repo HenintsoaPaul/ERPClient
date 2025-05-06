@@ -57,11 +57,11 @@ public class SupplierQuotationController {
             @RequestBody UpdateRequest request
     ) {
         try {
-            SupplierQuotationItem data = supplierQuotationItemService.updateRate(
+            supplierQuotationItemService.updateRate(
                     request.itemId(),
                     request.newRate(),
                     request.newQty()
-            ).data();
+            );
             return ResponseEntity.ok("Updated successfully!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

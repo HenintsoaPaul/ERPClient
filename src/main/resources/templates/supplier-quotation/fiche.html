@@ -72,8 +72,7 @@
                             th:data-item-code="${item.itemCode}"
                             th:data-current-rate="${item.rate}"
                             th:data-current-qty="${item.qty}"
-                            th:data-row-index="${iterStat.index}"
-                            th:disabled="${sq.status != 'Draft'}">
+                            th:data-row-index="${iterStat.index}">
                         Edit Rate
                     </button>
                 </td>
@@ -170,6 +169,7 @@
                     },
                     error: function (xhr) {
                         // Handle error
+                        console.log(xhr);
                         alert('Error updating rate');
                     }
                 });

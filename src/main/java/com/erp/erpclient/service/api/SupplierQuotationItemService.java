@@ -39,17 +39,17 @@ public class SupplierQuotationItemService {
         }
     }
 
-    public UpdateResponse updateRate(String itemId, Double newRate, Double newQty) {
+    public void updateRate(String itemId, Double newRate, Double newQty) {
         try {
             Map<String, Object> requestBody = Map.of(
                     "rate", newRate,
                     "qty", newQty
             );
 
-            return apiClient.executePut(
+            apiClient.executePut(
                     SUPPLIER_QUOTATION_ITEM_PATH + itemId,
                     requestBody,
-                    UpdateResponse.class
+                    Object.class
             );
         } catch (RestClientException e) {
             log.error("Failed to update rate for item {}", itemId, e);
