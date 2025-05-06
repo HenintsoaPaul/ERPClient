@@ -1,51 +1,32 @@
 package com.erp.erpclient.service.api;
 
-import com.erp.erpclient.SessionManager;
-import com.erp.erpclient.dto.PurchaseOrderItemResponse;
+import com.erp.erpclient.dto.porder.PurchaseOrderItemResponse;
+import com.erp.erpclient.exception.ApiClientException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class PurchaseOrderItemService {
 
-    private final RestClient restClient;
-    private final SessionManager sessionManager;
+    private final ApiClient apiClient;
 
-    public PurchaseOrderItemResponse findAllBySupplier(String name) {
+    public PurchaseOrderItemResponse findAllBySupplier(String supplierName) {
         try {
-            String sessionCookie = sessionManager.getAuthCookie();
+            String uri = UriComponentsBuilder
+                    .fromPath("/api/method/erpnext.api.get_full_purchase_order")
+                    .queryParam("name", supplierName)
+                    .build()
+                    .toUriString();
 
-            RestClient.ResponseSpec responseSpec = this.restClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/api/method/erpnext.api.get_full_purchase_order")
-                            .queryParam("name", name)
-                            .build()
-                    )
-                    .header(HttpHeaders.COOKIE, sessionCookie)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .retrieve();
-
-            return responseSpec
-                    .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
-                        String body = res.getBody().toString();
-                        throw new RuntimeException("API client error: " + res.getStatusCode() + " - " + body);
-                    })
-                    .onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
-                        String body = res.getBody().toString();
-                        throw new RuntimeException("API server error: " + res.getStatusCode() + " - " + body);
-                    })
-                    .body(PurchaseOrderItemResponse.class);
+            return apiClient.executeGet(uri, PurchaseOrderItemResponse.class);
         } catch (RestClientException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error : " + e.getMessage());
+            log.error("Failed to fetch purchase order items for {}", supplierName, e);
+            throw new ApiClientException("purchase.order.item.fetch.error", e);
         }
     }
 }

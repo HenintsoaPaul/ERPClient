@@ -1,6 +1,5 @@
-package com.erp.erpclient.dto;
+package com.erp.erpclient.dto.porder;
 
-import com.erp.erpclient.entity.Supplier;
 import com.erp.erpclient.entity.porder.PurchaseOrder;
 
 import java.util.List;

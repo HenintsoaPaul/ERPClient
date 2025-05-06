@@ -2,11 +2,11 @@ package com.erp.erpclient.controller;
 
 import com.erp.erpclient.entity.supplierquotation.SupplierQuotation;
 import com.erp.erpclient.entity.supplierquotation.SupplierQuotationItem;
+import com.erp.erpclient.entity.supplierquotation.UpdateRequest;
 import com.erp.erpclient.service.api.SupplierQuotationItemService;
 import com.erp.erpclient.service.api.SupplierQuotationService;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -52,33 +52,19 @@ public class SupplierQuotationController {
         return "supplier-quotation/fiche";
     }
 
-    @Data
-    private static class FufuRequest {
-        private String quotationId;
-        private String itemCode;
-        private Double newRate;
-    }
-
-    @Data
-    @AllArgsConstructor
-    private static class FufuResponse {
-        private boolean success;
-        private String message;
-        private Double updatedRate;
-    }
-
     @PostMapping(value = "/update-item-rate", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<FufuResponse> upItemRate(
-            @RequestBody FufuRequest request
+    public ResponseEntity<String> upItemRate(
+            @RequestBody UpdateRequest request
     ) {
-        boolean updateSuccess = true;
-
-        if (updateSuccess) {
-            return ResponseEntity.ok()
-                    .body(new FufuResponse(true, "Rate updated successfully", request.getNewRate()));
-        } else {
-            return ResponseEntity.internalServerError()
-                    .body(new FufuResponse(false, "Failed to update rate in ERPNext", null));
+        try {
+            SupplierQuotationItem data = supplierQuotationItemService.updateRate(
+                    request.itemId(),
+                    request.newRate(),
+                    request.newQty()
+            ).data();
+            return ResponseEntity.ok("Updated successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

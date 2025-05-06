@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ERPClient - Purchase Invoices List</title>
+</head>
+<body>
+<h1>Purchase Invoices List of a <!***!></h1>
+
+<!--general-->
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Supplier</th>
+            <th>Status</th>
+            <th>Posting Date</th>
+            <th>Posting Time</th>
+            <th>Due Date</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="pi : ${purchaseInvoices}">
+            <td th:text="${pi.name}"></td>
+            <td th:text="${pi.supplierName}"></td>
+            <td th:text="${pi.status}"></td>
+            <td th:text="${pi.postingDate}"></td>
+            <td th:text="${pi.postingTime}"></td>
+            <td th:text="${pi.dueDate}"></td>
+            <td>
+                <a th:href="'/purchase-invoices/fiche?name=' + ${pi.name} + '&sp_name=' + ${pi.supplierName}">
+                    Detail
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
