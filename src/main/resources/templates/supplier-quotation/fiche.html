@@ -72,7 +72,8 @@
                             th:data-item-code="${item.itemCode}"
                             th:data-current-rate="${item.rate}"
                             th:data-current-qty="${item.qty}"
-                            th:data-row-index="${iterStat.index}">
+                            th:data-row-index="${iterStat.index}"
+                            th:disabled="${sq.status != 'Draft'}">
                         Edit Rate
                     </button>
                 </td>
