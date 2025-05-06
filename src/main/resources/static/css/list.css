@@ -2,23 +2,48 @@ body {
     background-color: #f8f9fa;
     padding: 2rem;
 }
+
 h1 {
     text-align: center;
     margin-bottom: 2rem;
 }
+
 table {
     background-color: white;
     overflow: hidden;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
+
 th {
     background-color: #343a40;
     color: white;
 }
+
 td, th {
     text-align: center;
     vertical-align: middle;
 }
+
 a {
     margin: 0 5px;
+}
+
+table {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.table-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.edit-rate-btn {
+    cursor: pointer;
+    color: #0d6efd;
+}
+
+.edit-rate-btn:hover {
+    text-decoration: underline;
 }
