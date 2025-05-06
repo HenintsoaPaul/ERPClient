@@ -68,7 +68,8 @@
                     <button class="btn btn-sm btn-outline-primary edit-rate-btn"
                             th:data-item-id="${item.itemCode}"
                             th:data-current-rate="${item.rate}"
-                            th:data-row-index="${iterStat.index}">
+                            th:data-row-index="${iterStat.index}"
+                            th:disabled="${sq.status != 'Draft'}">
                         Edit Rate
                     </button>
                 </td>
