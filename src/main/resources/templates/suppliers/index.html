@@ -8,7 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/list.css}">
 </head>
 <body>
-
+  
 <header th:include="fragments/navbar"></header>
 
 <main class="container">
@@ -38,6 +38,9 @@
                     </a>
                     <a class="btn btn-sm btn-secondary" th:href="'/purchase-orders?supplier_name=' + ${supplier.name}">
                         Orders
+                    </a>
+                    <a class="btn btn-sm btn-secondary" th:href="'/purchase-invoices?supplier_name=' + ${supplier.name}">
+                        Invoices
                     </a>
                 </td>
             </tr>

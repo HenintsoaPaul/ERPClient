@@ -49,6 +49,7 @@
         <table class="table table-bordered table-striped align-middle">
             <thead class="table-dark">
             <tr>
+                <th>#</th>
                 <th>Item Code</th>
                 <th>Item Name</th>
                 <th>Quantity</th>
@@ -59,6 +60,7 @@
             </thead>
             <tbody>
             <tr th:each="item,iterStat : ${items}">
+                <td th:text="${item.name}"></td>
                 <td th:text="${item.itemCode}"></td>
                 <td th:text="${item.itemName}"></td>
                 <td th:text="${item.qty}"></td>
@@ -66,8 +68,10 @@
                 <td class="item-rate" th:text="${item.rate}"></td>
                 <td>
                     <button class="btn btn-sm btn-outline-primary edit-rate-btn"
-                            th:data-item-id="${item.itemCode}"
+                            th:data-item-id="${item.name}"
+                            th:data-item-code="${item.itemCode}"
                             th:data-current-rate="${item.rate}"
+                            th:data-current-qty="${item.qty}"
                             th:data-row-index="${iterStat.index}">
                         Edit Rate
                     </button>
@@ -79,7 +83,12 @@
 </main>
 
 <!-- Edit Rate Modal -->
-<div class="modal fade" id="editRateModal" tabindex="-1">
+<div class="modal fade"
+     id="editRateModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="editRateTitle"
+     aria-modal="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -96,6 +105,11 @@
                         <label for="newRate" class="form-label">New Rate</label>
                         <input type="number" step="0.01" class="form-control" id="newRate" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="newQty" class="form-label">New Qty</label>
+                        <input type="number" step="1" class="form-control" id="newQty" required>
+                    </div>
+                    <input type="hidden" id="itemId">
                     <input type="hidden" id="rowIndex">
                 </form>
             </div>
@@ -117,12 +131,16 @@
 
         // Handle edit button click
         $('.edit-rate-btn').click(function () {
-            let itemCode = $(this).data('item-id');
+            let itemId = $(this).data('item-id');
+            let itemCode = $(this).data('item-code');
             let currentRate = $(this).data('current-rate');
+            let currentQty = $(this).data('current-qty');
             let rowIndex = $(this).data('row-index');
 
+            $('#itemId').val(itemId);
             $('#itemCode').val(itemCode);
             $('#newRate').val(currentRate);
+            $('#newQty').val(currentQty);
             $('#rowIndex').val(rowIndex);
 
             editRateModal.show();
@@ -131,6 +149,7 @@
         // Handle save button click
         $('#saveRateBtn').click(function () {
             const newRate = $('#newRate').val();
+            const newQty = $('#newQty').val();
             const rowIndex = $('#rowIndex').val();
 
             if (newRate && newRate > 0) {
@@ -140,15 +159,15 @@
                     method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({
-                        itemCode: $('#itemCode').val(),
+                        itemId: $('#itemId').val(),
                         newRate: newRate,
-                        quotationId: '[[${sq.name}]]' // Thymeleaf syntax for quotation ID
+                        newQty: newQty
                     }),
-                    success: function(response) {
+                    success: function (response) {
                         // Handle success
                         editRateModal.hide();
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         // Handle error
                         alert('Error updating rate');
                     }
@@ -156,8 +175,7 @@
 
                 // Update the table display
                 $($('.item-rate')[rowIndex]).text(newRate);
-                $()
-
+                $($('.item-qty')[rowIndex]).text(newQty);
 
                 // For now, just close the modal
                 editRateModal.hide();

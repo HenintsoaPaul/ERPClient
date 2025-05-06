@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERPClient - Quotations List</title>
+    <title>ERPClient - Purchase Invoice Detail</title>
     <!-- Bootstrap CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- jQuery CDN -->
@@ -48,20 +48,19 @@
 <body>
 <div class="container">
     <h1>
-        Purchase Invoices from '<span th:text="${po.supplierName}"></span>'
+        <span th:text="${po.name}"></span> - Purchase Invoice Detail
     </h1>
 
     <!-- General Quotation Info -->
     <div class="table-container">
+        <h2>General Information</h2>
+
         <table class="table table-striped table-hover">
             <thead class="table-primary">
             <tr>
                 <th>#</th>
                 <th>Supplier</th>
                 <th>Status</th>
-                <th>Posting Date</th>
-                <th>Posting Time</th>
-                <th>Due Date</th>
                 <th>Action</th>
             </tr>
             </thead>
@@ -70,19 +69,59 @@
                 <td th:text="${po.name}"></td>
                 <td th:text="${po.supplierName}"></td>
                 <td th:text="${po.status}"></td>
-                <td th:text="${po.postingDate}"></td>
-                <td th:text="${po.postingTime}"></td>
-                <td th:text="${po.dueDate}"></td>
                 <td>
                     <button class="btn btn-sm btn-outline-primary edit-rate-btn"
-                            th:data-item-name="${po.name}"
-                            th:data-current-status="${po.status}">
+                            th:data-pinvoice-name="${po.name}">
                         Pay This
                     </button>
                 </td>
             </tr>
             </tbody>
         </table>
+
+        <!-- Payment Info -->
+        <div>
+            <h4>Payment information</h4>
+
+            <table class="table table-striped table-hover">
+                <thead class="table-primary">
+                <tr>
+                    <th>Total Amount</th>
+                    <th>Outstanding Amount</th>
+                    <th>Allocated Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${po.grandTotal}"></td>
+                    <td th:text="${po.outstandingAmount}"></td>
+                    <td th:text="${po.allocatedAmount}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Temporal Info -->
+        <div>
+            <h4>Temporal information</h4>
+
+            <table class="table table-striped table-hover">
+                <thead class="table-primary">
+                <tr>
+                    <th>Posting Date</th>
+                    <th>Posting Time</th>
+                    <th>Due Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${po.postingDate}"></td>
+                    <td th:text="${po.postingTime}"></td>
+                    <td th:text="${po.dueDate}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Items Table -->
@@ -129,6 +168,10 @@
                         <label for="amount" class="form-label">Amount</label>
                         <input type="number" step="0.01" class="form-control" id="amount" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="payment-method" class="form-label">Payment Method</label>
+                        <input type="text" class="form-control" id="payment-method" value="Cash" readonly>
+                    </div>
                     <input type="hidden" id="rowIndex">
                 </form>
             </div>
@@ -148,52 +191,53 @@
         // Initialize modal
         const editRateModal = new bootstrap.Modal(document.getElementById('editRateModal'), {focus: true});
 
+        const editRateBtn = $('.edit-rate-btn');
+
         // Handle edit button click
-        $('.edit-rate-btn').click(function () {
-            let itemCode = $(this).data('item-id');
-            let currentRate = $(this).data('current-rate');
-            let rowIndex = $(this).data('row-index');
-
-            $('#itemCode').val(itemCode);
-            $('#newRate').val(currentRate);
-            $('#rowIndex').val(rowIndex);
-
+        editRateBtn.click(function () {
             editRateModal.show();
         });
 
         // Handle save button click
         $('#saveRateBtn').click(function () {
-            const newRate = $('#newRate').val();
-            const rowIndex = $('#rowIndex').val();
+            const purchaseInvoiceId = editRateBtn.data('pinvoice-name');
+            const amount = $('#amount').val();
+            const postingDate = $('#postingDate').val();
 
-            if (newRate && newRate > 0) {
+            console.log(purchaseInvoiceId, amount, postingDate)
+
+            if (amount && amount > 0) {
                 // Here you would typically make an AJAX call to update the rate in your backend
                 $.ajax({
-                    url: '/purchase-invoices/set-paid',
+                    url: '/purchase-invoices/add-payment',
                     method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({
-                        itemCode: $('#itemCode').val(),
-                        newRate: newRate,
-                        quotationId: `[[${po.name}]]` // Thymeleaf syntax for quotation ID
+                        purchaseInvoiceId: purchaseInvoiceId,
+                        postingDate: postingDate,
+                        amount: amount,
                     }),
-                    success: function(response) {
+                    success: function (response) {
                         // Handle success
                         editRateModal.hide();
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         // Handle error
                         alert('Error updating rate');
                     }
                 });
 
-                // Update the table display
-                $($('.item-rate')[rowIndex]).text(newRate);
+                // // Update the table display
+                // $(
+                //     $('.item-rate')[rowIndex]
+                // ).text(amount);
 
 
                 // For now, just close the modal
                 editRateModal.hide();
             } else {
+                console.log(amount)
+
                 alert('Please enter a valid rate');
             }
         });
