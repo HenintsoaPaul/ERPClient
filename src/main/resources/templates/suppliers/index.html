@@ -3,37 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <title>ERPClient - Suppliers List</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/list.css}">
 </head>
 <body>
-<h1>Suppliers List</h1>
 
-<table>
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Country</th>
-        <th>Group</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="supplier : ${suppliers}">
-        <td th:text="${supplier.name}">#</td>
-        <td th:text="${supplier.supplierName}">Supplier Name</td>
-        <td th:text="${supplier.supplierType}">Supplier Type</td>
-        <td th:text="${supplier.country}">Country</td>
-        <td th:text="${supplier.supplierGroup}">Supplier Group</td>
-        <td>
-            <a th:href="'/supplier-quotations?supplier_name=' + ${supplier.name}">
-                See quotations
-            </a>
-            <a th:href="'/purchase-orders?supplier_name=' + ${supplier.name}">
-                See purchase orders
-            </a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<header th:include="fragments/navbar"></header>
+
+<main class="container">
+    <h1 class="my-4">Suppliers List</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Country</th>
+                <th>Group</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="supplier : ${suppliers}">
+                <td th:text="${supplier.name}">#</td>
+                <td th:text="${supplier.supplierName}">Supplier Name</td>
+                <td th:text="${supplier.supplierType}">Supplier Type</td>
+                <td th:text="${supplier.country}">Country</td>
+                <td th:text="${supplier.supplierGroup}">Supplier Group</td>
+                <td>
+                    <a class="btn btn-sm btn-info" th:href="'/supplier-quotations?supplier_name=' + ${supplier.name}">
+                        Quotations
+                    </a>
+                    <a class="btn btn-sm btn-secondary" th:href="'/purchase-orders?supplier_name=' + ${supplier.name}">
+                        Orders
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
