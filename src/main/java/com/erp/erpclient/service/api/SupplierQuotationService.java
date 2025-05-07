@@ -37,14 +37,14 @@ public class SupplierQuotationService {
 
     public void submitByName(String name) {
         try {
-            Map<String, Object> requestBody = Map.of(
-                    "status", "Submitted"
-            );
-
+            // Préparer le corps de la requête pour soumettre le ou les documents
+            Map<String, Object> requestBody = Map.of("docstatus", 1);
+    
+            // Exécuter un PUT sur /api/resource/Supplier Quotation/{name}
             apiClient.executePut(
-                    SUPPLIER_QUOTATION_PATH + name,
-                    requestBody,
-                    Object.class
+                SUPPLIER_QUOTATION_PATH + name,
+                requestBody,
+                Object.class
             );
         } catch (RestClientException e) {
             log.error("Failed to submit supplier quotation {}", name, e);
