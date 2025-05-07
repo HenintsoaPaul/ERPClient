@@ -174,40 +174,48 @@
 
             console.log(purchaseInvoiceId, amount, postingDate)
 
-            if (amount && amount > 0) {
-                // Here you would typically make an AJAX call to update the rate in your backend
-                $.ajax({
-                    url: '/purchase-invoices/add-payment',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        purchaseInvoiceId: purchaseInvoiceId,
-                        postingDate: postingDate,
-                        amount: amount,
-                    }),
-                    success: function (response) {
-                        // Handle success
-                        editRateModal.hide();
-                    },
-                    error: function (xhr) {
-                        // Handle error
-                        alert('Error updating rate');
-                    }
-                });
-
-                // // Update the table display
-                // $(
-                //     $('.item-rate')[rowIndex]
-                // ).text(amount);
-
-
-                // For now, just close the modal
-                editRateModal.hide();
-            } else {
+            if (!amount || amount <= 0) {
                 console.log(amount)
 
                 alert('Please enter a valid rate');
+                return;
             }
+
+            if (!postingDate) {
+                console.log(postingDate);
+                
+                alert('Please enter a posting date');
+                return;
+            }
+
+            // Here you would typically make an AJAX call to update the rate in your backend
+            $.ajax({
+                url: '/purchase-invoices/add-payment',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    purchaseInvoiceId: purchaseInvoiceId,
+                    postingDate: postingDate,
+                    amount: amount,
+                }),
+                success: function (response) {
+                    // Handle success
+                    editRateModal.hide();
+                },
+                error: function (xhr) {
+                    // Handle error
+                    alert('Error during payment');
+                }
+            });
+
+            // // Update the table display
+            // $(
+            //     $('.item-rate')[rowIndex]
+            // ).text(amount);
+
+
+            // For now, just close the modal
+            editRateModal.hide();
         });
     });
 </script>
