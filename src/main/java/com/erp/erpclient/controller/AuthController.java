@@ -29,15 +29,21 @@ public class AuthController {
             @RequestParam(name = "inp-pwd") String pwd,
             RedirectAttributes redirectAttributes
     ) {
-        LoginRequest req = new LoginRequest(usr, pwd);
-        loginService.login(req);
+        boolean auth = false;
+        try {
+            LoginRequest req = new LoginRequest(usr, pwd);
+            loginService.login(req);
+            auth = sessionManager.hasAuthCookie();
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("err", "Login Failed");
+            return "redirect:/";
+        }
 
-        boolean auth = sessionManager.hasAuthCookie();
         if (auth) {
             return "redirect:/suppliers";
         } else {
             redirectAttributes.addFlashAttribute("err", "Login Failed");
-            return "index";
+            return "redirect:/";
         }
     }
     

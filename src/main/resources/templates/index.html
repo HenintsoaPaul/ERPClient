@@ -37,6 +37,11 @@
 
 <div id="login-container">
     <h3>ERP Login</h3>
+
+    <!-- Display success or error messages -->
+    <div th:if="${msg}" class="alert alert-success" role="alert" th:text="${msg}"></div>
+    <div th:if="${err}" class="alert alert-danger" role="alert" th:text="${err}"></div>
+
     <form action="/login" method="post">
         <div class="mb-3">
             <label for="usr" class="form-label">Username</label>
