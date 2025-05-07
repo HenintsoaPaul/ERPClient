@@ -14,6 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Controller
 @RequestMapping("/supplier-quotations")
@@ -66,6 +69,16 @@ public class SupplierQuotationController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/submit")
+    public String submit(
+        @RequestParam(name = "quotation_name") String quotationName,
+        @RequestParam(name = "sp_name") String spName
+    ) {
+        supplierQuotationService.submitByName(quotationName);
+
+        return "redirect:/supplier-quotations/fiche?name=" + quotationName + "&sp_name=" + spName;
     }
 
 }

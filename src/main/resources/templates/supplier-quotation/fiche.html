@@ -46,6 +46,12 @@
     <!-- Items Table -->
     <div class="table-container">
         <h2>Items</h2>
+        <div class="my-2 text-end" th:if="${#strings.equalsIgnoreCase(sq.status, 'draft')}">
+            <a class="btn btn-success"
+                th:href="@{/supplier-quotations/submit(quotation_name=${sq.name}, sp_name=${sq.supplierName})}">
+                    Submit changes
+            </a>
+        </div>
         <table class="table table-bordered table-striped align-middle">
             <thead class="table-dark">
             <tr>
@@ -72,7 +78,8 @@
                             th:data-item-code="${item.itemCode}"
                             th:data-current-rate="${item.rate}"
                             th:data-current-qty="${item.qty}"
-                            th:data-row-index="${iterStat.index}">
+                            th:data-row-index="${iterStat.index}"
+                            th:if="${#strings.equalsIgnoreCase(sq.status, 'draft')}">
                         Edit Rate
                     </button>
                 </td>

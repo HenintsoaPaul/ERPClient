@@ -67,7 +67,7 @@ public class PurchaseInvoiceController {
                 request.getAmount(),
                 request.getPostingDate(),
                 "Cash",
-                "remark be lele"
+                "No remark"
         );
 
         if (ok.equals("ok")) {
